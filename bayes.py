@@ -1,8 +1,28 @@
+from collections import defaultdict
+
 class Bayes(list):
     """
     Class for Bayesian probabilistic evaluation through creation and update of
     beliefs. This is meant for abstract reasoning, not just classification.
     """
+    @staticmethod
+    def extract_events_odds(classes_instances, event_extractor):
+        """
+        Runs function `event_extractor` for every instance in every class in
+        `classes_instances` ({class: [instances]}) and returns the odds of each
+        event happening for each class.
+
+        The result of this function is meant to be used in a future
+        `update_from_events` call.
+        """
+        events_odds = defaultdict(lambda: defaultdict(int))
+        for class_, instances in classes_instances.items():
+            for instance in instances:
+                for event in event_extractor(instance):
+                    events_odds[event][class_] += 1
+
+        return events_odds
+
     def __init__(self, value=None, labels=None):
         """
         Creates a new Bayesian belief system.
@@ -147,6 +167,7 @@ class Bayes(list):
             items.append(label + ': ' + str(item * 100)[:5] + '%')
         return 'Bayes({})'.format(', '.join(items))
 
+
 if __name__ == '__main__':
     print ' -- Classic Cancer Test Problem --'
     # 1% chance of having cancer.
@@ -158,7 +179,7 @@ if __name__ == '__main__':
 
     print ''
     
-    print ' -- Spam Filter --'
+    print ' -- Spam Filter With Existing Model --'
     # Database with number of sightings of each words in (genuine, spam)
     # emails.
     words_odds = {'buy': (5, 100), 'viagra': (1, 1000), 'meeting': (15, 2)}
@@ -176,8 +197,28 @@ if __name__ == '__main__':
         # Update probabilities, using the words in the emails as events and the
         # database of chances to figure out the change.
         b.update_from_events(email.split(), words_odds)
-        # Print the email and if it's likely spam o rnot.
+        # Print the email and if it's likely spam or not.
         print email[:15] + '...', b.most_likely()
+
+    print ''
+
+    print ' -- Spam Filter With Email Corpus -- '
+
+    # Email corpus. A hundred spam emails to buy products and with the word
+    # "meeting" thrown around. Genuine emails are about meetings and buying
+    # milk.
+    instances = {'spam': ["buy viagra", "buy cialis"] * 100 + ["meeting love"],
+                 'genuine': ["meeting tomorrow", "buy milk"] * 100}
+
+    # Use str.split to extract features/events/words from the corpus and build
+    # the model.
+    model = Bayes.extract_events_odds(instances, str.split)
+    # Create a new Bayes instance with 10%/90% priors on emails being genuine.
+    b = Bayes({'spam': .9, 'genuine': .1})
+    # Update beliefs with features/events/words from an email.
+    b.update_from_events("buy coffee for meeting".split(), model)
+    # Print the email and if it's likely spam or not.
+    print "'buy coffee for meeting'", ':', b
 
     print ''
 
