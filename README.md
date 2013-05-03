@@ -2,7 +2,8 @@ bayes
 =====
 
 **Bayes** is a small Python class to reason about probabilities.
-It uses a Bayesian system to crunch belief updates and spew likelihoods.
+It uses a Bayesian system to extract features, crunch belief updates and
+spew likelihoods back.
 
 `b = Bayes([.5, .5])`: creates a new scenario with two equally likely classes
 
@@ -34,9 +35,29 @@ for email in emails:
     # Update probabilities, using the words in the emails as events and the
     # database of chances to figure out the change.
     b.update_from_events(email.split(), words_odds)
-    # Print the email and if it's likely spam o rnot.
+    # Print the email and if it's likely spam or not.
     print email[:15] + '...', b.most_likely()
     
+print ''
+
+print ' -- Spam Filter With Email Corpus -- '
+
+# Email corpus. A hundred spam emails to buy products and with the word
+# "meeting" thrown around. Genuine emails are about meetings and buying
+# milk.
+instances = {'spam': ["buy viagra", "buy cialis"] * 100 + ["meeting love"],
+             'genuine': ["meeting tomorrow", "buy milk"] * 100}
+
+# Use str.split to extract features/events/words from the corpus and build
+# the model.
+model = Bayes.extract_events_odds(instances, str.split)
+# Create a new Bayes instance with 10%/90% priors on emails being genuine.
+b = Bayes({'spam': .9, 'genuine': .1})
+# Update beliefs with features/events/words from an email.
+b.update_from_events("buy coffee for meeting".split(), model)
+# Print the email and if it's likely spam or not.
+print "'buy coffee for meeting'", ':', b
+
 print ''
 
 print ' -- Classic Cancer Test Problem --'
