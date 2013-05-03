@@ -35,6 +35,8 @@ Example Usage
         b.update_from_events(email.split(), words_odds)
         # Print the email and if it's likely spam o rnot.
         print email[:15] + '...', b.most_likely()
+        
+    print ''
 
     print ' -- Classic Cancer Test Problem --'
     # 1% chance of having cancer.
@@ -43,6 +45,16 @@ Example Usage
     b.update((9.6, 80))
     print b
     print 'Most likely:', b.most_likely()
+    
+    print ''
+
+    print ' -- Are You Cheating? -- '
+    results = ['heads', 'heads', 'tails', 'heads', 'heads']
+    events_odds = {'heads': {'honest': .5, 'cheating': .9},
+                   'tails': {'honest': .5, 'cheating': .1}}
+    b = Bayes({'cheating': .5, 'honest': .5})
+    b.update_from_events(results, events_odds)
+    print b
 
 
     def b():
