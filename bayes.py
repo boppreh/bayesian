@@ -148,7 +148,7 @@ class Bayes(list):
         return 'Bayes({})'.format(', '.join(items))
 
 if __name__ == '__main__':
-    print ' -- Cancer Test --'
+    print ' -- Classic Cancer Test Problem --'
     # 1% chance of having cancer.
     b = Bayes([('not cancer', 0.99), ('cancer', 0.01)])
     # Test positive, 9.6% false positives and 80% true positives
@@ -157,6 +157,7 @@ if __name__ == '__main__':
     print 'Most likely:', b.most_likely()
 
     print ''
+    
     print ' -- Spam Filter --'
     # Database with number of sightings of each words in (genuine, spam)
     # emails.
@@ -178,6 +179,15 @@ if __name__ == '__main__':
         # Print the email and if it's likely spam o rnot.
         print email[:15] + '...', b.most_likely()
 
+    print ''
+
+    print ' -- Are You Cheating? -- '
+    results = ['heads', 'heads', 'tails', 'heads', 'heads']
+    events_odds = {'heads': {'honest': .5, 'cheating': .9},
+                   'tails': {'honest': .5, 'cheating': .1}}
+    b = Bayes({'cheating': .5, 'honest': .5})
+    b.update_from_events(results, events_odds)
+    print b
 
     def b():
         return Bayes((0.99, 0.01), labels=['not cancer', 'cancer'])
@@ -190,5 +200,6 @@ if __name__ == '__main__':
     b().update_from_events(['pos'], {'pos': (9.6, 80)})
     b().update_from_tests([True], [(9.6, 80)])
     Bayes([('not cancer', 0.99), ('cancer', 0.01)]) * (9.6, 80)
-    Bayes({'not cancer': 0.99, 'cancer': 0.01}) * {'not cancer': 9.6, 'cancer': 80}
+    Bayes({'not cancer': 0.99, 'cancer': 0.01}) * {'not cancer': 9.6,
+                                                   'cancer': 80}
 
