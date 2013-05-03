@@ -1,92 +1,151 @@
-from collections import OrderedDict
-
-class Bayes(OrderedDict):
+class Bayes(list):
     """
     Class for Bayesian probabilistic evaluation through creation and update of
-    beliefs.
+    beliefs. This is meant for abstract reasoning, not just classification.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, value=None, labels=None):
         """
-        Creates a new instance from a dictionary {scenario: probability}, a
-        list of tuples [(scenario, probability)], a list of probabilities for
-        unnamed scenarios, or another Bayes object to be copied.
+        Creates a new Bayesian belief system.
 
-        Odds are normalized to [0, 1] probabilities automatically.
+        `value` can be another Bayes
+        object to be copied, an array of odds, an array of (label, odds)
+        tuples or a dictionary {label: odds}.
+
+        `labels` is a list of names for the odds in `value`. Labels default to
+        the their indexes.
         """
-        if len(args) == 1 and not isinstance(args[0], dict):
-            try:
-                args = [dict(args[0])]
-            except TypeError:
-                args = [dict(enumerate(args[0]))]
+        if value is not None:
+            # Convert dictionary.
+            if isinstance(value, dict):
+                labels = labels or sorted(value.keys())
+                value = [value[label] for label in labels]
 
-        super(Bayes, self).__init__(*args, **kwargs)
-        self.normalize()
+            # Convert list of tuples.
+            elif labels is None and len(value) and isinstance(value[0], tuple):
+                labels, value = zip(*value)
+
+        super(Bayes, self).__init__(value)
+        self.labels = labels or map(str, range(len(self)))
+
+    def __getitem__(self, i):
+        """ Returns the odds at index or label `i`. """
+        if isinstance(i, str):
+            return self[self.labels.index(i)]
+        else:
+            return super(Bayes, self).__getitem__(i)
+
+    def __setitem__(self, i, value):
+        """ Sets the odds at index or label `i`. """
+        if isinstance(i, str):
+            self[self.labels.index(i)] = value
+        else:
+            super(Bayes, self).__setitem__(i, value)
+
+    def _cast(self, other):
+        """
+        Converts and unknown object into a Bayes object, keeping the same
+        labels if possible.
+        """
+        if isinstance(other, Bayes):
+            return other
+        else:
+            return Bayes(other, self.labels)
+
+    def opposite(self):
+        """
+        Returns the opposite probabilities.
+        Ex: [.7, .3] -> [.3, .7]
+        """
+        if 0 in self:
+            return self._cast(1 if i == 0 else 0 for i in self)
+        else:
+            return self._cast(1 / i for i in self)
+
+    def normalized(self):
+        """
+        Converts the list of odds into a list probabilities that sum to 1.
+        """
+        total = float(sum(self))
+        return self._cast(i / total for i in self)
 
     def __mul__(self, other):
-        copy = Bayes(self)
-        copy.update([other])
-        return copy
+        """
+        Creates a new instance with odds from both this and the other instance.
+        Ex: [.5, .5] * [.9, .1] -> [.45, .05] (non normalized)
+        """
+        return self._cast(i * j for i, j in zip(self, self._cast(other)))
 
     def __div__(self, other):
-        copy = Bayes(other)
-        copy.negate()
-        copy.update([self])
-        return copy
+        """
+        Creates a new instance with odds from this instance and the opposite of
+        the other.
+        Ex: [.5, .5] / [.9, .1] -> [.555, 50.0] (non normalized)
+        """
+        return self * self._cast(other).opposite()
 
-    def negate(self):
-        if 0 in self.values():
-            for name, value in self.items():
-                self[name] = 1 if value == 0 else 0
-        else:
-            for name, value in self.items():
-                self[name] = 1 / value
-
-        self.normalize()
-
-    def update(self, event, do_normalize=True):
-        try:
-            for name, value in event.items():
-                self[name] *= value
-        except AttributeError:
-            for name, value in zip(self, event):
-                self[name] *= value
-
-        if do_normalize:
-            self.normalize()
+    def update(self, event):
+        """
+        Updates all current odds based on the likelihood of odds in event.
+        Modifies the instance and returns itself.
+        Ex: [.5, .5].update([.9, .1]) becomes [.45, .05] (non normalized)
+        """
+        self[:] = self * self._cast(event)
+        return self
 
     def update_from_events(self, events, events_odds):
+        """
+        Perform an update for every event in events, taking the new odds from
+        the dictionary events_odds (if available).
+        Ex: [.5, .5].update_from_events(['pos'], {'pos': [.9, .1]})
+        becomes [.45, .05] (non normalized)
+        """
         for event in events:
             if event in events_odds:
                 self.update(events_odds[event])
+        return self
 
-    def update_from_tests(self, tests_results, tests_odds):
-        for result, chance in zip(tests_results, tests_odds):
+    def update_from_tests(self, tests_results, odds):
+        """
+        For every binary test in `tests_results`, updates the current belief
+        using the item at the same position in `odds`. If the test is true, use
+        the odds as is. If it's false, use it's opposite.
+        Ex: [.5, .5].update_from_tests([True], [.9, .1]) becomes [.45, .05]
+        (non normalized)
+        """
+        for result, chance in zip(tests_results, odds):
             if result:
                 self.update(chance)
             else:
-                b = Bayes(chance)
-                b.negate()
-                self.update(b)
+                self.update(self._cast(chance).opposite())
+        return self
 
     def most_likely(self, cutoff=0.0):
-        values = self.values()
-        max_value = max(values)
+        """
+        Returns the label with most probability, or None if its probability is
+        under `cutoff`.
+        Ex: {a: .4, b: .6}.most_likely() -> b
+            {a: .4, b: .6}.most_likely(cutoff=.7) -> None
+        """
+        normalized = self.normalized()
+        max_value = max(normalized)
 
         if max_value > cutoff:
-            return self.keys()[values.index(max_value)]
+            return self.labels[normalized.index(max_value)]
         else:
             return None
 
-    def normalize(self):
-        total = float(sum(self.values()))
-        for key in self:
-            self[key] /= total
+    def is_likely(self, label, minimum_probability=0.5):
+        """
+        Returns if `label` has at least probability `minimum_probability`.
+        Ex: {a: .4, b: .6}.is_likely(b) -> True
+        """
+        return self.normalized()[label] > minimum_probability
 
     def __str__(self):
-        pairs = []
-        for key, value in self.items():
-            pairs.append(key + ': ' + str(value * 100)[:5] + '%')
-        return 'Bayes({})'.format(', '.join(pairs))
+        items = []
+        for label, item in zip(self.labels, self.normalized()):
+            items.append(label + ': ' + str(item * 100)[:5] + '%')
+        return 'Bayes({})'.format(', '.join(items))
 
 if __name__ == '__main__':
     print ' -- Cancer Test --'
@@ -118,3 +177,18 @@ if __name__ == '__main__':
         b.update_from_events(email.split(), words_odds)
         # Print the email and if it's likely spam o rnot.
         print email[:15] + '...', b.most_likely()
+
+
+    def b():
+        return Bayes((0.99, 0.01), labels=['not cancer', 'cancer'])
+
+    # Random equivalent examples
+    b() * (9.6, 80)
+    (b() * (9.6, 80)).opposite().opposite()
+    b().update({'not cancer': 9.6, 'cancer': 80})
+    b().update((9.6, 80))
+    b().update_from_events(['pos'], {'pos': (9.6, 80)})
+    b().update_from_tests([True], [(9.6, 80)])
+    Bayes([('not cancer', 0.99), ('cancer', 0.01)]) * (9.6, 80)
+    Bayes({'not cancer': 0.99, 'cancer': 0.01}) * {'not cancer': 9.6, 'cancer': 80}
+
