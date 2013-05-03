@@ -1,22 +1,35 @@
 bayes
 =====
 
-**Bayes** is a small Python class to reason about probabilities.
+**bayes** is a small Python utility to reason about probabilities.
 It uses a Bayesian system to extract features, crunch belief updates and
-spew likelihoods back.
-
-`b = Bayes([.5, .5])`: creates a new scenario with two equally likely classes
-
-`b.update([.9, .1])`: updates the scenario with an event that is 9 times more
-likely to have happened in the first class
-
-`print(b.most_likely())`: prints which of the two classes is now more likely
+spew likelihoods back. You can use either the high-level functions to
+classify instances with supervised learning, or update beliefs manually
+with the `Bayes` class.
   
+High Level
+----------
 
-Example Usage
+```python
+from bayes import classify, classify_file
+
+spams = ["buy viagra", "dear recipient", "meet sexy singles"] # etc
+genuines = ["let's meet tomorrow", "remember to buy milk"]
+message = "remember the meeting tomorrow"
+print classify(message, {'spam': spams, 'genuine': genuines})
+# Classify as "genuine" because of the words "remember" and "tomorrow".
+
+print classify_file("unknown_file", ["java_files", "python_files"])
+# Classifies "unknown_file" as either a Python or Java file, considering
+# you have directories with examples of each language.
+```
+
+Low Level
 -------------
 
 ```python
+from bayes import Bayes
+
 print ' -- Spam Filter --'
 # Database with number of sightings of each words in (genuine, spam)
 # emails.
