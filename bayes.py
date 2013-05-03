@@ -1,4 +1,33 @@
 from collections import defaultdict
+import os
+
+def classify(instance, classes_instances, extractor=str.split):
+    """
+    Using `classes_instances` as supervised learning, classify `instance` into
+    one of the example classes. `extractor` is a function to convert instances
+    into a list of events/features to be analyzed, which defaults to a simple
+    word extraction.
+    """
+    model = Bayes.extract_events_odds(classes_instances, extractor)
+    b = Bayes({class_: 1.0 for class_ in classes_instances})
+    b.update_from_events(extractor(instance), model)
+    return b.most_likely()
+
+def classify_file(file_, folders, extractor=str.split):
+    """
+    Classify `file_` into one of `folders`, based on the contents of the files
+    already there.  `extractor` is a function to convert file contents
+    into a list of events/features to be analyzed, which defaults to a simple
+    word extraction.
+    """
+    classes_instances = defaultdict(list)
+    for folder in folders:
+        for child in os.listdir(folder):
+            classes_instances[folder].append(os.path.join(folder, child))
+
+    new_extractor = lambda f: extractor(open(f).read())
+    return classify(file_, classes_instances, new_extractor)
+
 
 class Bayes(list):
     """
@@ -6,7 +35,7 @@ class Bayes(list):
     beliefs. This is meant for abstract reasoning, not just classification.
     """
     @staticmethod
-    def extract_events_odds(classes_instances, event_extractor):
+    def extract_events_odds(classes_instances, event_extractor=str.split):
         """
         Runs function `event_extractor` for every instance in every class in
         `classes_instances` ({class: [instances]}) and returns the odds of each
@@ -15,7 +44,8 @@ class Bayes(list):
         The result of this function is meant to be used in a future
         `update_from_events` call.
         """
-        events_odds = defaultdict(lambda: defaultdict(int))
+        small = 0.000001
+        events_odds = defaultdict(lambda: defaultdict(lambda: small))
         for class_, instances in classes_instances.items():
             for instance in instances:
                 for event in event_extractor(instance):
@@ -109,7 +139,7 @@ class Bayes(list):
         Modifies the instance and returns itself.
         Ex: [.5, .5].update([.9, .1]) becomes [.45, .05] (non normalized)
         """
-        self[:] = self * self._cast(event)
+        self[:] = (self * self._cast(event)).normalized()
         return self
 
     def update_from_events(self, events, events_odds):
@@ -164,7 +194,7 @@ class Bayes(list):
     def __str__(self):
         items = []
         for label, item in zip(self.labels, self.normalized()):
-            items.append(label + ': ' + str(item * 100)[:5] + '%')
+            items.append('{}: {}%'.format(label, round(item * 100, 2)))
         return 'Bayes({})'.format(', '.join(items))
 
 
