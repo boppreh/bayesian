@@ -2,18 +2,34 @@ from bayes import Bayes, classify_normal, classify, classify_file
 
 print ' == High Level Functions == '
 
-print ' -- Classify person gender based on height, weight and foot size -- '
+print ' -- Gender Classification -- '
+# Decides if the person with those measures is male or female.
 print classify_normal({'height': 6, 'weight': 130, 'foot size': 8},
-                          {'male': [{'height': 6, 'weight': 180, 'foot size': 12},
-                                    {'height': 5.92, 'weight': 190, 'foot size': 11},
-                                    {'height': 5.58, 'weight': 170, 'foot size': 12},
-                                    {'height': 5.92, 'weight': 165, 'foot size': 10}],
-                           'female': [{'height': 5, 'weight': 100, 'foot size': 6},
-                                      {'height': 5.5, 'weight': 150, 'foot size': 8},
-                                      {'height': 5.42, 'weight': 130, 'foot size': 7},
-                                      {'height': 5.75, 'weight': 150, 'foot size': 9}]})
+                      {'male': [{'height': 6, 'weight': 180, 'foot size': 12},
+                                {'height': 5.92, 'weight': 190, 'foot size': 11},
+                                {'height': 5.58, 'weight': 170, 'foot size': 12},
+                                {'height': 5.92, 'weight': 165, 'foot size': 10}],
+                       'female': [{'height': 5, 'weight': 100, 'foot size': 6},
+                                  {'height': 5.5, 'weight': 150, 'foot size': 8},
+                                  {'height': 5.42, 'weight': 130, 'foot size': 7},
+                                  {'height': 5.75, 'weight': 150, 'foot size': 9}]})
 
 print ''
+
+print ' -- Spam Detection With `Classify` -- '
+spams = ["buy viagra", "dear recipient", "meet sexy singles"] # etc
+genuines = ["let's meet tomorrow", "remember to buy milk"]
+message = "remember the meeting tomorrow"
+# Classify as "genuine" because of the words "remember" and "tomorrow".
+print classify(message, {'spam': spams, 'genuine': genuines})
+
+# Classifies "unknown_file" as either a Python or Java file, considering
+# you have directories with examples of each language.
+#print classify_file("unknown_file", ["java_files", "python_files"])
+
+print ''
+
+print ' == Low Level Functions == '
 
 print ' -- Classic Cancer Test Problem --'
 # 1% chance of having cancer.
