@@ -28,6 +28,26 @@ def classify_file(file_, folders, extractor=str.split):
     new_extractor = lambda f: extractor(open(f).read())
     return classify(file_, classes_instances, new_extractor)
 
+def classify_folder(folder, extractor=str.split):
+    """
+    Move every file in `folder` into one of its subfolders, based on the
+    contents of the files in those subfolders. `extractor` is a function to
+    convert file contents int oa list of events/features to be analyzed, which
+    defaults to a simple word extraction.
+    """
+    subfolders = []
+    files = []
+    for item in os.listdir(folder):
+        if os.path.isdir(item):
+            subfolders.append(os.path.join(folder, item))
+        else:
+            files.append(os.path.join(folder, item))
+
+    for file_ in files:
+        classification = classify_file(file_, subfolders, extractor)
+        os.rename(file_, os.path.join(folder, classification, file_))
+
+
 from math import sqrt, pi, exp
 def gaussian_distribution(values):
     """
@@ -249,3 +269,9 @@ class Bayes(list):
             items.append('{}: {}%'.format(label, round(item * 100, 2)))
         return 'Bayes({})'.format(', '.join(items))
 
+
+if __name__ == '__main__':
+    import sys
+    for folder in sys.argv[1:]:
+        print folder
+        classify_folder(folder)

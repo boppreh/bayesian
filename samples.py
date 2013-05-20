@@ -1,4 +1,4 @@
-from bayes import Bayes, classify_normal, classify, classify_file
+from bayes import Bayes, classify_normal, classify
 
 print ' == High Level Functions == '
 
@@ -26,6 +26,10 @@ print classify(message, {'spam': spams, 'genuine': genuines})
 # Classifies "unknown_file" as either a Python or Java file, considering
 # you have directories with examples of each language.
 #print classify_file("unknown_file", ["java_files", "python_files"])
+
+# Classifies every file under "folder" as either a Python or Java file,
+# considering you have subdirectories with examples of each language.
+#print classify_folder("folder")
 
 print ''
 

@@ -6,6 +6,9 @@ It uses a Bayesian system to extract features, crunch belief updates and
 spew likelihoods back. You can use either the high-level functions to
 classify instances with supervised learning, or update beliefs manually
 with the `Bayes` class.
+
+If you want to simply classify and move files into the most fitting folder, run
+this program from the command line passing the root folder path as parameter.
   
 High Level
 ----------
@@ -33,6 +36,10 @@ print classify_normal({'height': 6, 'weight': 130, 'foot size': 8},
 # Classifies "unknown_file" as either a Python or Java file, considering
 # you have directories with examples of each language.
 print classify_file("unknown_file", ["java_files", "python_files"])
+
+# Classifies every file under "folder" as either a Python or Java file,
+# considering you have subdirectories with examples of each language.
+print classify_folder("folder")
 ```
 
 Low Level
