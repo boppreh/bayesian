@@ -23,7 +23,10 @@ def classify_file(file_, folders, extractor=str.split):
     classes_instances = defaultdict(list)
     for folder in folders:
         for child in os.listdir(folder):
-            classes_instances[folder].append(os.path.join(folder, child))
+            child_path = os.path.join(folder, child)
+            if os.path.isfile(child_path):
+                print child_path
+                classes_instances[folder].append(child_path)
 
     new_extractor = lambda f: extractor(open(f).read())
     return classify(file_, classes_instances, new_extractor)
