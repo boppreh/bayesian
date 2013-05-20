@@ -25,7 +25,6 @@ def classify_file(file_, folders, extractor=str.split):
         for child in os.listdir(folder):
             child_path = os.path.join(folder, child)
             if os.path.isfile(child_path):
-                print child_path
                 classes_instances[folder].append(child_path)
 
     new_extractor = lambda f: extractor(open(f).read())
@@ -41,14 +40,18 @@ def classify_folder(folder, extractor=str.split):
     subfolders = []
     files = []
     for item in os.listdir(folder):
-        if os.path.isdir(item):
-            subfolders.append(os.path.join(folder, item))
+        path = os.path.join(folder, item)
+        if os.path.isdir(path):
+            subfolders.append(path)
         else:
-            files.append(os.path.join(folder, item))
+            files.append(path)
 
     for file_ in files:
         classification = classify_file(file_, subfolders, extractor)
-        os.rename(file_, os.path.join(folder, classification, file_))
+        new_path = os.path.join(classification, os.path.basename(file_))
+        if not os.path.exists(new_path):
+            print file_, classification
+            os.rename(file_, new_path)
 
 
 from math import sqrt, pi, exp
@@ -276,5 +279,4 @@ class Bayes(list):
 if __name__ == '__main__':
     import sys
     for folder in sys.argv[1:]:
-        print folder
         classify_folder(folder)
