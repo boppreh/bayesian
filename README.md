@@ -1,7 +1,7 @@
-bayes
-=====
+Bayesian
+========
 
-**bayes** is a small Python utility to reason about probabilities.
+**bayesan** is a small Python utility to reason about probabilities.
 It uses a Bayesian system to extract features, crunch belief updates and
 spew likelihoods back. You can use either the high-level functions to
 classify instances with supervised learning, or update beliefs manually
@@ -14,7 +14,7 @@ High Level
 ----------
 
 ```python
-from bayes import classify, classify_file
+from bayesian import classify, classify_file
 
 spams = ["buy viagra", "dear recipient", "meet sexy singles"] # etc
 genuines = ["let's meet tomorrow", "remember to buy milk"]
@@ -46,7 +46,7 @@ Low Level
 -------------
 
 ```python
-from bayes import Bayes
+from bayesian import Bayes
 
 print ' -- Spam Filter --'
 # Database with number of sightings of each words in (genuine, spam)
@@ -81,7 +81,7 @@ instances = {'spam': ["buy viagra", "buy cialis"] * 100 + ["meeting love"],
 
 # Use str.split to extract features/events/words from the corpus and build
 # the model.
-model = Bayes.extract_events_odds(instances, str.split)
+model = bayesian.extract_events_odds(instances, str.split)
 # Create a new Bayes instance with 10%/90% priors on emails being genuine.
 b = Bayes({'spam': .9, 'genuine': .1})
 # Update beliefs with features/events/words from an email.

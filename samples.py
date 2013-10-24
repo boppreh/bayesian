@@ -1,4 +1,4 @@
-from bayes import Bayes, classify_normal, classify
+from bayesian import Bayes, classify_normal, classify
 
 print ' == High Level Functions == '
 
