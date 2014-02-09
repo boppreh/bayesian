@@ -9,5 +9,5 @@ setup(
     url='http://pypi.python.org/pypi/Bayesian/',
     license='LICENSE.txt',
     description='Utility module for Bayesian reasoning',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
 )
