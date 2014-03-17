@@ -78,9 +78,8 @@ def gaussian_probability(sample, distribution):
         # 100% if sample is exactly at mean, otherwise 0%.
         return 0 if sample != mean else 1
 
-    std_dev = sqrt(variance)
     return (exp((sample - mean) ** 2 / (-2 * variance))
-            / std_dev * sqrt(2 * pi))
+            / sqrt(2 * pi * variance))
 
 def properties_distributions(classes_population):
     """
