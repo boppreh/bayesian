@@ -1,3 +1,10 @@
+0.2.0 (2014-16-3)
+++++++++++++++++++
+
+- Python3 support.
+- Fix bug in `gaussian_probability` (thanks *cokoder*)
+
+
 0.1.0 (2013-10-24)
 ++++++++++++++++++
 
