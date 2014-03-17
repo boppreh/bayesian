@@ -34,7 +34,7 @@ def classify_folder(folder, extractor=str.split):
     """
     Move every file in `folder` into one of its subfolders, based on the
     contents of the files in those subfolders. `extractor` is a function to
-    convert file contents int a list of events/features to be analyzed, which
+    convert file contents into a list of events/features to be analyzed, which
     defaults to a simple word extraction.
     """
     subfolders = []
@@ -72,6 +72,12 @@ def gaussian_probability(sample, distribution):
     distribution.
     """
     mean, variance = distribution
+
+    # Special case of degenerate distribution.
+    if variance == 0:
+        # 100% if sample is exactly at mean, otherwise 0%.
+        return 0 if sample != mean else 1
+
     std_dev = sqrt(variance)
     return (exp((sample - mean) ** 2 / (-2 * variance))
             / std_dev * sqrt(2 * pi))
