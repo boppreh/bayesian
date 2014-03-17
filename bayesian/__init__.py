@@ -72,8 +72,9 @@ def gaussian_probability(sample, distribution):
     distribution.
     """
     mean, variance = distribution
+    std_dev = sqrt(variance)
     return (exp((sample - mean) ** 2 / (-2 * variance))
-            / sqrt(2 * pi * variance))
+            / std_dev * sqrt(2 * pi))
 
 def properties_distributions(classes_population):
     """
