@@ -34,7 +34,7 @@ def classify_folder(folder, extractor=str.split):
     """
     Move every file in `folder` into one of its subfolders, based on the
     contents of the files in those subfolders. `extractor` is a function to
-    convert file contents int oa list of events/features to be analyzed, which
+    convert file contents int a list of events/features to be analyzed, which
     defaults to a simple word extraction.
     """
     subfolders = []
@@ -50,7 +50,7 @@ def classify_folder(folder, extractor=str.split):
         classification = classify_file(file_, subfolders, extractor)
         new_path = os.path.join(classification, os.path.basename(file_))
         if not os.path.exists(new_path):
-            print file_, classification
+            print(file_, classification)
             os.rename(file_, new_path)
 
 
