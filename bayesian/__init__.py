@@ -108,8 +108,9 @@ def classify_normal(instance, classes_instances):
     b = Bayes({class_: .5 for class_ in classes_instances})
     for property, value in instance.items():
         classes_distributions = distributions[property]
-        b.update({class_: gaussian_probability(value, distribution)
-                  for class_, distribution in classes_distributions.items()})
+        probability_by_class = {class_: gaussian_probability(value, distribution)
+                for class_, distribution in classes_distributions.items()}
+        b.update(probability_by_class)
     return b.most_likely()
         
 
