@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 from bayesian import Bayes, classify_normal, classify
 
 print(' == High Level Functions == ')
