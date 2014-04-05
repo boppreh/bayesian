@@ -1,3 +1,9 @@
+0.2.1 (2014-16-5)
+++++++++++++++++++
+
+- Allow the user to supply priors in `classify` and `classify_normal`.
+
+
 0.2.0 (2014-16-3)
 ++++++++++++++++++
 
