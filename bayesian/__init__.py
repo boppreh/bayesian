@@ -107,7 +107,7 @@ def classify_normal(instance, classes_instances, priors=None):
     classes_instances must be of type {class: [{property: value}]}
     priors must be of type {class: odds} and is automatically normalized.
     """
-    priors = priors or {class_: .5 for class_ in classes_instances}
+    priors = priors or {class_: 1.0 for class_ in classes_instances}
     b = Bayes(priors)
 
     distributions = properties_distributions(classes_instances)
