@@ -1,15 +1,16 @@
 from collections import defaultdict
 import os
 
-def classify(instance, classes_instances, extractor=str.split):
+def classify(instance, classes_instances, extractor=str.split, priors=None):
     """
     Using `classes_instances` as supervised learning, classify `instance` into
     one of the example classes. `extractor` is a function to convert instances
     into a list of events/features to be analyzed, which defaults to a simple
     word extraction.
     """
+    priors = priors or {class_: 1.0 for class_ in classes_instances}
     model = Bayes.extract_events_odds(classes_instances, extractor)
-    b = Bayes({class_: 1.0 for class_ in classes_instances})
+    b = Bayes(priors)
     b.update_from_events(extractor(instance), model)
     return b.most_likely()
 
@@ -96,21 +97,26 @@ def properties_distributions(classes_population):
             properties_distributions[property][class_] = gaussian_distribution(instances)
     return properties_distributions
 
-def classify_normal(instance, classes_instances):
+def classify_normal(instance, classes_instances, priors=None):
     """
     Classify `instance` into one of the classes from `classes_instances`,
     calculating the probabilities from the Gaussian (normal) distribution
-    from each classes' instances.
+    from each classes' instances, starting from `priors` (uniform if not
+    specified).
 
     classes_instances must be of type {class: [{property: value}]}
+    priors must be of type {class: odds} and is automatically normalized.
     """
+    priors = priors or {class_: .5 for class_ in classes_instances}
+    b = Bayes(priors)
+
     distributions = properties_distributions(classes_instances)
-    b = Bayes({class_: .5 for class_ in classes_instances})
     for property, value in instance.items():
         classes_distributions = distributions[property]
         probability_by_class = {class_: gaussian_probability(value, distribution)
                 for class_, distribution in classes_distributions.items()}
         b.update(probability_by_class)
+
     return b.most_likely()
         
 
