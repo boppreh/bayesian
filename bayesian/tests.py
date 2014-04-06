@@ -51,5 +51,14 @@ class TestBayes(unittest.TestCase):
         self.assertEqual(opposite[1] / opposite[2], b[2] / b[1])
         self.assertEqual(opposite[0] / opposite[2], b[2] / b[0])
 
+    def test_normalized(self):
+        self.assertEqual(Bayes([]).normalized(), [])
+        self.assertEqual(Bayes([2]).normalized(), [1])
+        self.assertEqual(Bayes([9, 1]).normalized(), [0.9, 0.1])
+        self.assertEqual(Bayes([2, 4, 4]).normalized(), [0.2, 0.4, 0.4])
+        self.assertEqual(Bayes([2, 0]).normalized(), [1.0, 0])
+        with self.assertRaises(ZeroDivisionError):
+            self.assertEqual(Bayes([0, 0]).normalized(), [1.0, 0])
+
 if __name__ == '__main__':
     unittest.main()
