@@ -229,7 +229,7 @@ class Bayes(list):
         """
         Creates a new instance with odds from this instance and the opposite of
         the other.
-        Ex: [.5, .5] / [.9, .1] -> [.555, 50.0] (non normalized)
+        Ex: [.5, .5] / [.9, .1] -> [.555, 5.0] (non normalized)
         """
         return self * self._cast(other).opposite()
 
