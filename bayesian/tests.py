@@ -80,5 +80,14 @@ class TestBayes(unittest.TestCase):
         self.assertNotEqual(b1, b3)
         self.assertNotEqual(b2, b3)
 
+    def test_update(self):
+        b = Bayes([1, 2])
+        b.update((2, 1))
+        self.assertEqual(b, [1, 1])
+        b.update((2, 1))
+        self.assertEqual(b, [2, 1])
+        b.update((2, 0))
+        self.assertEqual(b, [1, 0])
+
 if __name__ == '__main__':
     unittest.main()
