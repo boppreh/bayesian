@@ -225,7 +225,7 @@ class Bayes(list):
         """
         return self._cast(i * j for i, j in zip(self, self._cast(other)))
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         Creates a new instance with odds from this instance and the opposite of
         the other.
