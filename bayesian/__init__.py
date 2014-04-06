@@ -291,11 +291,16 @@ class Bayes(list):
         """
         return self.normalized()[label] > minimum_probability
 
-    def __str__(self):
+    def __repr__(self):
         items = []
         for label, item in zip(self.labels, self.normalized()):
             items.append('{}: {}%'.format(label, round(item * 100, 2)))
         return 'Bayes({})'.format(', '.join(items))
+
+    def __eq__(self, other):
+        if isinstance(other, Bayes) and self.labels != other.labels:
+            return False
+        return list(self.normalized()) == list(self._cast(other).normalized())
 
 
 if __name__ == '__main__':
