@@ -119,7 +119,6 @@ def classify_normal(instance, classes_instances, priors=None):
 
     return b.most_likely()
         
-
 class Bayes(list):
     """
     Class for Bayesian probabilistic evaluation through creation and update of
@@ -155,18 +154,26 @@ class Bayes(list):
         `labels` is a list of names for the odds in `value`. Labels default to
         the their indexes.
         """
-        if value is not None:
+        if value is None:
+            raise ValueError('Expected non-None value, got {}.'.format(value))
+
+        if isinstance(value, dict):
             # Convert dictionary.
-            if isinstance(value, dict):
-                labels = labels or sorted(value.keys())
-                value = [value[label] for label in labels]
-
+            labels = labels or value.keys()
+            raw_values = [value[label] for label in labels]
+        elif labels is None and len(value) and isinstance(value[0], tuple):
             # Convert list of tuples.
-            elif labels is None and len(value) and isinstance(value[0], tuple):
-                labels, value = zip(*value)
+            labels, raw_values = zip(*value)
+        else:
+            # Convert raw list of values.
+            labels = [str(i) for i in range(len(value))]
+            raw_values = value
 
-        super(Bayes, self).__init__(value)
-        self.labels = labels or map(str, range(len(self)))
+        if len(labels) != len(set(labels)):
+            raise ValueError('Labels must not be duplicated. Got {}.'.format(labels))
+
+        self.labels = labels
+        super(Bayes, self).__init__(raw_values)
 
     def __getitem__(self, i):
         """ Returns the odds at index or label `i`. """
