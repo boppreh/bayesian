@@ -60,5 +60,14 @@ class TestBayes(unittest.TestCase):
         with self.assertRaises(ZeroDivisionError):
             self.assertEqual(Bayes([0, 0]).normalized(), [1.0, 0])
 
+    def test_operators(self):
+        b = Bayes([5, 2, 3])
+        b *= (2, 2, 1)
+        b /= (2, 2, 1)
+        self.assertEqual(b, [5, 2, 3])
+
+        self.assertEqual(Bayes([.5, .5]) * (.9, .1), [0.45, 0.05])
+        self.assertEqual(Bayes([.5, .5]) / (.9, .1), [5 / 9, 5])
+
 if __name__ == '__main__':
     unittest.main()
