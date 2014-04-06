@@ -159,7 +159,7 @@ class Bayes(list):
 
         if isinstance(value, dict):
             # Convert dictionary.
-            labels = labels or value.keys()
+            labels = labels or sorted(value.keys())
             raw_values = [value[label] for label in labels]
         elif labels is None and len(value) and isinstance(value[0], tuple):
             # Convert list of tuples.
