@@ -40,5 +40,16 @@ class TestBayes(unittest.TestCase):
         b[2] = 30
         self.assertEqual(b, [50, 40, 30])
 
+    def test_opposite(self):
+        b = Bayes([0.2, 0.8])
+        opposite = b.opposite()
+        self.assertEqual(opposite[0] / opposite[1], b[1] / b[0])
+
+        b = Bayes([0.2, 0.4, 0.4])
+        opposite = b.opposite()
+        self.assertEqual(opposite[0] / opposite[1], b[1] / b[0])
+        self.assertEqual(opposite[1] / opposite[2], b[2] / b[1])
+        self.assertEqual(opposite[0] / opposite[2], b[2] / b[0])
+
 if __name__ == '__main__':
     unittest.main()
