@@ -163,7 +163,7 @@ class Bayes(list):
             raw_values = [value[label] for label in labels]
         else:
             value = list(value)
-            if labels is None and len(value) and isinstance(value[0], tuple):
+            if len(value) and isinstance(value[0], tuple):
                 # Convert list of tuples.
                 labels, raw_values = zip(*value)
             else:

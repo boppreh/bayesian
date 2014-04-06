@@ -69,6 +69,9 @@ class TestBayes(unittest.TestCase):
         self.assertEqual(Bayes([.5, .5]) * (.9, .1), [0.45, 0.05])
         self.assertEqual(Bayes([.5, .5]) / (.9, .1), [5 / 9, 5])
 
+        self.assertEqual(Bayes([.5, .5]) * {'0': 0.9, '1': 0.1}, [0.45, 0.05])
+        self.assertEqual(Bayes([.5, .5]) * [('0', 0.9), ('1', 0.1)], [0.45, 0.05])
+
     def test_equality(self):
         b1 = Bayes([0.5, 0.2, 0.3])
         b2 = Bayes([5, 2, 3])
