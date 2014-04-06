@@ -159,15 +159,17 @@ class Bayes(list):
 
         if isinstance(value, dict):
             # Convert dictionary.
-            labels = labels or sorted(value.keys())
+            labels = labels or list(sorted(value.keys()))
             raw_values = [value[label] for label in labels]
-        elif labels is None and len(value) and isinstance(value[0], tuple):
-            # Convert list of tuples.
-            labels, raw_values = zip(*value)
         else:
-            # Convert raw list of values.
-            labels = [str(i) for i in range(len(value))]
-            raw_values = value
+            value = list(value)
+            if labels is None and len(value) and isinstance(value[0], tuple):
+                # Convert list of tuples.
+                labels, raw_values = zip(*value)
+            else:
+                # Convert raw list of values.
+                labels = [str(i) for i in range(len(value))]
+                raw_values = value
 
         if len(labels) != len(set(labels)):
             raise ValueError('Labels must not be duplicated. Got {}.'.format(labels))
