@@ -87,15 +87,15 @@ def properties_distributions(classes_population):
     Converts classes populations into classes distributions by property.
     {class: [{property: value}]} -> {property: {class: distribution}}
     """
-    properties_distributions = defaultdict(dict)
+    distributions = defaultdict(dict)
     for class_, population in classes_population.items():
         properties_instances = defaultdict(list)
         for properties in population:
             for property, value in properties.items():
                 properties_instances[property].append(value)
         for property, instances in properties_instances.items():
-            properties_distributions[property][class_] = gaussian_distribution(instances)
-    return properties_distributions
+            distributions[property][class_] = gaussian_distribution(instances)
+    return distributions
 
 def classify_normal(instance, classes_instances, priors=None):
     """
