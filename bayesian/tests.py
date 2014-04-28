@@ -110,5 +110,11 @@ class TestBayes(unittest.TestCase):
         self.assertEqual(b.most_likely(0.9), 'a')
         self.assertEqual(b.most_likely(0.91), None)
 
+    def test_conversions(self):
+        b = Bayes({'a': 9, 'b': 1, 'c': 0})
+        self.assertEqual(b, b.normalized())
+        self.assertEqual(b.normalized()['a'], 0.9)
+        self.assertEqual(b.opposite().opposite(), b)
+
 if __name__ == '__main__':
     unittest.main()
