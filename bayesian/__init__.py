@@ -257,16 +257,17 @@ class Bayes(list):
     def update_from_tests(self, tests_results, odds):
         """
         For every binary test in `tests_results`, updates the current belief
-        using the item at the same position in `odds`. If the test is true, use
-        the odds as is. If it's false, use it's opposite.
+        depending on `odds`. If the test was True, use the odds as-is. If the
+        test was false, use the opposite odds.
         Ex: [.5, .5].update_from_tests([True], [.9, .1]) becomes [.45, .05]
         (non normalized)
         """
-        for result, chance in zip(tests_results, odds):
+        opposite_odds = self._cast(odds).opposite()
+        for result in tests_results:
             if result:
-                self.update(chance)
+                self.update(odds)
             else:
-                self.update(self._cast(chance).opposite())
+                self.update(opposite_odds)
         return self
 
     def most_likely(self, cutoff=0.0):
