@@ -63,7 +63,10 @@ def gaussian_distribution(values):
     """
     n = float(len(values))
     mean = sum(values) / n
-    variance = sum((value - mean) ** 2 for value in values) / (n - 1)
+    if n > 1:
+        variance = sum((value - mean) ** 2 for value in values) / (n - 1)
+    else:
+        variance = 0
     return (mean, variance)
 
 def gaussian_probability(sample, distribution):
