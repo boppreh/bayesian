@@ -151,5 +151,12 @@ class TestClassify(unittest.TestCase):
         self.assertEqual(classify('a', {'A': ['a a a'], 'B': ['b']}), 'A')
         self.assertEqual(classify('a', {'A': ['a', 'a'], 'B': ['b b b']}), 'A')
 
+    def test_sample(self):
+        spams = ["buy viagra", "dear recipient", "meet sexy singles"]
+        genuines = ["let's meet tomorrow", "remember to buy milk"]
+        message = "remember the meeting tomorrow"
+        instances = {'spam': spams, 'genuine': genuines}
+        self.assertEqual(classify(message, instances), 'genuine')
+
 if __name__ == '__main__':
     unittest.main()
