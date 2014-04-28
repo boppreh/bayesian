@@ -131,5 +131,13 @@ class TestBayes(unittest.TestCase):
         b.update_from_events('buy coffee for meeting'.split(), odds)
         self.assertEqual(b.most_likely(0.8), 'genuine')
 
+
+class TestClassify(unittest.TestCase):
+    def test_single(self):
+        self.assertEqual(classify('a', {'A': []}), 'A')
+        self.assertEqual(classify('a', {'A': ['a']}), 'A')
+        self.assertEqual(classify('a', {'A': ['a', 'a']}), 'A')
+        self.assertEqual(classify('a', {'A': ['a', 'b']}), 'A')
+
 if __name__ == '__main__':
     unittest.main()
