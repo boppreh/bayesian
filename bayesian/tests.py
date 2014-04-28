@@ -89,5 +89,10 @@ class TestBayes(unittest.TestCase):
         b.update((2, 0))
         self.assertEqual(b, [1, 0])
 
+    def test_update_from_events(self):
+        b = Bayes([1, 1])
+        b.update_from_events(['a', 'a', 'a'], {'a': (0.5, 2)})
+        self.assertEqual(b, [0.5 ** 3, 2 ** 3])
+
 if __name__ == '__main__':
     unittest.main()
