@@ -3,7 +3,7 @@ import sys
 sys.path.append('../')
 
 import unittest
-from bayesian import Bayes
+from bayesian import Bayes, classify
 
 class TestBayes(unittest.TestCase):
     def test_empty_constructor(self):
@@ -121,6 +121,15 @@ class TestBayes(unittest.TestCase):
         self.assertEqual(b, b.normalized())
         self.assertEqual(b.normalized()['a'], 0.9)
         self.assertEqual(b.opposite().opposite(), b)
+
+    def test_extract_events_odds(self):
+        instances = {'spam': ["buy viagra", "buy cialis"] * 100 + ["meeting love"],
+                     'genuine': ["meeting tomorrow", "buy milk"] * 100}
+        odds = Bayes.extract_events_odds(instances)
+
+        b = Bayes({'spam': 0.9, 'genuine': 0.1})
+        b.update_from_events('buy coffee for meeting'.split(), odds)
+        self.assertEqual(b.most_likely(0.8), 'genuine')
 
 if __name__ == '__main__':
     unittest.main()
