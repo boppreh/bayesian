@@ -139,5 +139,10 @@ class TestClassify(unittest.TestCase):
         self.assertEqual(classify('a', {'A': ['a', 'a']}), 'A')
         self.assertEqual(classify('a', {'A': ['a', 'b']}), 'A')
 
+    def test_basic(self):
+        self.assertEqual(classify('a', {'A': ['a'], 'B': ['b']}), 'A')
+        self.assertEqual(classify('a a a', {'A': ['a'], 'B': ['b']}), 'A')
+        self.assertEqual(classify('a a b', {'A': ['a'], 'B': ['b']}), 'A')
+
 if __name__ == '__main__':
     unittest.main()
