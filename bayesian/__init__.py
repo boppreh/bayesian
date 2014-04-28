@@ -155,7 +155,7 @@ class Bayes(list):
         the their indexes.
         """
         if value is None:
-            raise ValueError('Expected non-None value, got {}.'.format(value))
+            raise ValueError('Expected non-None `value`.')
 
         if isinstance(value, dict):
             # Convert dictionary.
