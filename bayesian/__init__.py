@@ -168,7 +168,8 @@ class Bayes(list):
                 labels, raw_values = zip(*value)
             else:
                 # Convert raw list of values.
-                labels = [str(i) for i in range(len(value))]
+                if labels is None:
+                    labels = [str(i) for i in range(len(value))]
                 raw_values = value
 
         if len(labels) != len(set(labels)):
