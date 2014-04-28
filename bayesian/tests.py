@@ -103,5 +103,12 @@ class TestBayes(unittest.TestCase):
         b.update_from_tests([True, True, True, False], [0.5, 2])
         self.assertEqual(b, [0.5 ** 2, 2 ** 2])
 
+    def test_most_likely(self):
+        b = Bayes({'a': 10, 'b': 1})
+        self.assertEqual(b.most_likely(), 'a')
+        self.assertEqual(b.most_likely(0), 'a')
+        self.assertEqual(b.most_likely(0.9), 'a')
+        self.assertEqual(b.most_likely(0.91), None)
+
 if __name__ == '__main__':
     unittest.main()
