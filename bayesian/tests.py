@@ -3,7 +3,7 @@ import sys
 sys.path.append('../')
 
 import unittest
-from bayesian import Bayes, classify
+from bayesian import Bayes, classify, classify_normal
 
 class TestBayes(unittest.TestCase):
     def test_empty_constructor(self):
@@ -157,6 +157,24 @@ class TestClassify(unittest.TestCase):
         message = "remember the meeting tomorrow"
         instances = {'spam': spams, 'genuine': genuines}
         self.assertEqual(classify(message, instances), 'genuine')
+
+# Classify File and Classify Folder require too much of a test harness for now.
+
+class TestClassifyNormal(unittest.TestCase):
+    def test_single(self):
+        pass
+
+    def test_sample(self):
+        instance = {'height': 6, 'weight': 130, 'foot size': 8}
+        training = {'male': [{'height': 6, 'weight': 180, 'foot size': 12},
+                            {'height': 5.92, 'weight': 190, 'foot size': 11},
+                            {'height': 5.58, 'weight': 170, 'foot size': 12},
+                            {'height': 5.92, 'weight': 165, 'foot size': 10}],
+                   'female': [{'height': 5, 'weight': 100, 'foot size': 6},
+                              {'height': 5.5, 'weight': 150, 'foot size': 8},
+                              {'height': 5.42, 'weight': 130, 'foot size': 7},
+                              {'height': 5.75, 'weight': 150, 'foot size': 9}]}
+        self.assertEqual(classify_normal(instance, training), 'female')
 
 if __name__ == '__main__':
     unittest.main()
