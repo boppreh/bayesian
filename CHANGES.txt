@@ -1,3 +1,14 @@
+0.3.0 (2014-28-5)
+++++++++++++++++++
+
+- Increase stability
+- Fix edge cases (e.g. callin .opposite on all zeroes)
+- Fix label passing between instances
+- Better equality testing for Bayes instances
+- Override division operator on Python3
+- Add unit tests
+
+
 0.2.1 (2014-16-5)
 ++++++++++++++++++
 
