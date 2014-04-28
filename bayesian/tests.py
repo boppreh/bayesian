@@ -104,11 +104,17 @@ class TestBayes(unittest.TestCase):
         self.assertEqual(b, [0.5 ** 2, 2 ** 2])
 
     def test_most_likely(self):
-        b = Bayes({'a': 10, 'b': 1})
+        b = Bayes({'a': 9, 'b': 1})
         self.assertEqual(b.most_likely(), 'a')
         self.assertEqual(b.most_likely(0), 'a')
-        self.assertEqual(b.most_likely(0.9), 'a')
-        self.assertEqual(b.most_likely(0.91), None)
+        self.assertEqual(b.most_likely(0.89), 'a')
+        self.assertIsNone(b.most_likely(0.91))
+
+    def test_is_likely(self):
+        b = Bayes({'a': 9, 'b': 1})
+        self.assertTrue(b.is_likely('a'))
+        self.assertTrue(b.is_likely('a', 0.89))
+        self.assertFalse(b.is_likely('a', 0.91))
 
     def test_conversions(self):
         b = Bayes({'a': 9, 'b': 1, 'c': 0})
