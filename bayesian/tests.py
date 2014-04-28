@@ -57,8 +57,7 @@ class TestBayes(unittest.TestCase):
         self.assertEqual(Bayes([9, 1]).normalized(), [0.9, 0.1])
         self.assertEqual(Bayes([2, 4, 4]).normalized(), [0.2, 0.4, 0.4])
         self.assertEqual(Bayes([2, 0]).normalized(), [1.0, 0])
-        with self.assertRaises(ZeroDivisionError):
-            self.assertEqual(Bayes([0, 0]).normalized(), [1.0, 0])
+        self.assertEqual(Bayes([0, 0]).normalized(), [0.0, 0])
 
     def test_operators(self):
         b = Bayes([5, 2, 3])
@@ -165,6 +164,10 @@ class TestClassifyNormal(unittest.TestCase):
         self.assertEqual(classify_normal({'a': 100}, {'A': [{'a': 100}]}), 'A')
         self.assertEqual(classify_normal({'a': 100, 'b': 0},
                                          {'A': [{'a': 100, 'b': 0}]}), 'A')
+
+        self.assertEqual(classify_normal({'a': 100, 'b': 0},
+                                         {'A': [{'a': 100, 'b': 10}],
+                                          'B': [{'a': 50, 'b': 100}]}), None)
 
     def test_basic(self):
         self.assertEqual(classify_normal({'a': 100, 'b': 0},

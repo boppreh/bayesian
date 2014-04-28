@@ -220,7 +220,10 @@ class Bayes(list):
         Converts the list of odds into a list probabilities that sum to 1.
         """
         total = float(sum(self))
-        return self._cast(i / total for i in self)
+        if total == 0:
+            return self._cast(0 for i in self)
+        else:
+            return self._cast(i / total for i in self)
 
     def __mul__(self, other):
         """
