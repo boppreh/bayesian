@@ -143,6 +143,13 @@ class TestClassify(unittest.TestCase):
         self.assertEqual(classify('a', {'A': ['a'], 'B': ['b']}), 'A')
         self.assertEqual(classify('a a a', {'A': ['a'], 'B': ['b']}), 'A')
         self.assertEqual(classify('a a b', {'A': ['a'], 'B': ['b']}), 'A')
+        self.assertEqual(classify('a a b', {'A': ['a', 'a'], 'B': ['b']}), 'A')
+        self.assertEqual(classify('a b b', {'A': ['a', 'a'], 'B': ['b']}), 'B')
+        self.assertEqual(classify('b b b', {'A': ['a', 'a'], 'B': ['b']}), 'B')
+
+    def test_with_extraction(self):
+        self.assertEqual(classify('a', {'A': ['a a a'], 'B': ['b']}), 'A')
+        self.assertEqual(classify('a', {'A': ['a', 'a'], 'B': ['b b b']}), 'A')
 
 if __name__ == '__main__':
     unittest.main()
