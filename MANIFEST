@@ -4,3 +4,4 @@ LICENSE.txt
 setup.py
 bayesian\__init__.py
 bayesian\samples.py
+bayesian\tests.py
