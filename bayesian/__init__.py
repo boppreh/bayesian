@@ -208,7 +208,7 @@ class Bayes(list):
         Ex: [.7, .3] -> [.3, .7]
         """
         if 0 in self:
-            return self._cast(1 if i == 0 else 0 for i in self)
+            return self._cast(1 / i if i != 0 else 0 for i in self)
         else:
             return self._cast(1 / i for i in self)
 
