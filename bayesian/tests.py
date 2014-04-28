@@ -162,7 +162,16 @@ class TestClassify(unittest.TestCase):
 
 class TestClassifyNormal(unittest.TestCase):
     def test_single(self):
-        pass
+        self.assertEqual(classify_normal({'a': 100}, {'A': [{'a': 100}]}), 'A')
+        self.assertEqual(classify_normal({'a': 100, 'b': 0},
+                                         {'A': [{'a': 100, 'b': 0}]}), 'A')
+
+    def test_basic(self):
+        self.assertEqual(classify_normal({'a': 100, 'b': 0},
+                                         {'A': [{'a': 100, 'b': 10},
+                                                {'a': 99, 'b': -10}],
+                                          'B': [{'a': 50, 'b': 100},
+                                                {'a': 70, 'b':90}]}), 'A')
 
     def test_sample(self):
         instance = {'height': 6, 'weight': 130, 'foot size': 8}
