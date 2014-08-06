@@ -124,3 +124,12 @@ Low Level
   Bayes([('not cancer', 0.99), ('cancer', 0.01)]) * (9.6, 80)
   Bayes({'not cancer': 0.99, 'cancer': 0.01}) * {'not cancer': 9.6,
                                                  'cancer': 80}
+
+
+Project details
+---------------
+
+:License: MIT
+:Code: https://github.com/boppreh/bayesian/
+:PyPI: https://pypi.python.org/pypi/Bayesian
+:Issue tracker: https://github.com/boppreh/bayesian/issues
