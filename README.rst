@@ -15,16 +15,16 @@ High Level
 
 ::
 
-  from bayesian import classify, classify_file
+  from bayesian import classify, classify_file, classify_folder, classify_normal
 
   spams = ["buy viagra", "dear recipient", "meet sexy singles"] # etc
   genuines = ["let's meet tomorrow", "remember to buy milk"]
   message = "remember the meeting tomorrow"
   # Classify as "genuine" because of the words "remember" and "tomorrow".
-  print classify(message, {'spam': spams, 'genuine': genuines})
+  print(classify(message, {'spam': spams, 'genuine': genuines}))
 
   # Decides if the person with those measures is male or female.
-  print classify_normal({'height': 6, 'weight': 130, 'foot size': 8},
+  print(classify_normal({'height': 6, 'weight': 130, 'foot size': 8},
                         {'male': [{'height': 6, 'weight': 180, 'foot size': 12},
                                   {'height': 5.92, 'weight': 190, 'foot size': 11},
                                   {'height': 5.58, 'weight': 170, 'foot size': 12},
@@ -32,15 +32,15 @@ High Level
                          'female': [{'height': 5, 'weight': 100, 'foot size': 6},
                                     {'height': 5.5, 'weight': 150, 'foot size': 8},
                                     {'height': 5.42, 'weight': 130, 'foot size': 7},
-                                    {'height': 5.75, 'weight': 150, 'foot size': 9}]})
+                                    {'height': 5.75, 'weight': 150, 'foot size': 9}]}))
 
   # Classifies "unknown_file" as either a Python or Java file, considering
   # you have directories with examples of each language.
-  print classify_file("unknown_file", ["java_files", "python_files"])
+  print(classify_file("unknown_file", ["java_files", "python_files"]))
 
   # Classifies every file under "folder" as either a Python or Java file,
   # considering you have subdirectories with examples of each language.
-  print classify_folder("folder")
+  print(classify_folder("folder"))
 
 Low Level
 -------------
@@ -82,7 +82,7 @@ Low Level
 
   # Use str.split to extract features/events/words from the corpus and build
   # the model.
-  model = bayesian.extract_events_odds(instances, str.split)
+  model = Bayes.extract_events_odds(instances, str.split)
   # Create a new Bayes instance with 10%/90% priors on emails being genuine.
   b = Bayes({'spam': .9, 'genuine': .1})
   # Update beliefs with features/events/words from an email.
