@@ -1,7 +1,7 @@
 Bayesian
 ========
 
-**bayesan** is a small Python utility to reason about probabilities.
+**bayesian** is a small Python utility to reason about probabilities.
 It uses a Bayesian system to extract features, crunch belief updates and
 spew likelihoods back. You can use either the high-level functions to
 classify instances with supervised learning, or update beliefs manually
